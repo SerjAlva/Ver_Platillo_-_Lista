@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    CardView_cardCornerRadius="20dp"
+    CardView_cardElevation="10dp"
+    CardView_cardBackgroundColor="#11A8E2"
+    >
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -18,33 +22,33 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="sans-serif-medium"
             android:text="TextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivImagen"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/ivMenos"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvPrecio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginEnd="42dp"
+            android:layout_marginRight="42dp"
+            android:fontFamily="sans-serif-medium"
             android:text="TextView"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitulo" />
 
@@ -55,34 +59,51 @@
             android:layout_marginStart="30dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="100dp"
-            android:src="@drawable/minus"
+            android:src="@drawable/ic_minus"
             app:layout_constraintStart_toEndOf="@+id/ivImagen"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/ivMas"
-            android:layout_width="wrap_content"
+            android:layout_width="22dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="100dp"
+            android:src="@drawable/ic_plus"
             app:layout_constraintStart_toEndOf="@+id/ivMenos"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/plus" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/ivPeople"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="6dp"
             android:layout_marginRight="6dp"
+            android:src="@drawable/ic_person"
             app:layout_constraintEnd_toStartOf="@+id/ivMas"
             app:layout_constraintStart_toEndOf="@+id/ivMenos"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_people_black_24dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/tvCantidadPorciones"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginBottom="12dp"
+            android:text="textView"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPeople"
+            app:layout_constraintStart_toStartOf="@+id/ivPeople" />
+
+        <ImageButton
+            android:id="@+id/ibRemove"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

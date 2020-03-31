@@ -1,13 +1,13 @@
 package com.example.vercarrito;
 
 import android.content.Context;
-import android.media.Image;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,20 +15,48 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
-
+    //Lista con los elementos que se van a desplegar
     public ArrayList<ItemCarrito> informacion;
+
+    //contexto en el que se crearan las vistas
     public Context context;
 
+    //Listener para detectar cuando se haga click en un determinado item del RecyclerView
+    private OnItemClickListener myListenner;
+
+    //Esta clase sirve para controlar los botones de cada card
+    public interface OnItemClickListener{
+
+        //Método que se manda a llamar cuando se toca en "cualquier parte" (menos el boton de añadir/quitar porción)
+        void onItemClick(int position);
+
+        //Método que se manda a llamar cuando se toca en añadir porción
+        void onAddPortionClick(int position);
+
+        //Método que se manda a llamar cuando se toca en quitar porción
+        void onRetirePortionClick(int position);
+
+        //Método que se llama cuando se toca el botón eliminar platillo
+        void onRemoveClick(int position);
+
+    }
+    //Este método se llama para configurar nuestro onItemClickListner
+    public void setOnItemClickListener(OnItemClickListener listener){
+        myListenner = listener;
+    }
 
     //Esta clase servirá para referenciar las vistas por cada item de la lista
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         //Creamos las variables de referencia para los elementos del CardView
         public CardView cardView;
-        public TextView titulo, precio;
+        public TextView titulo, precio, tvCantidadPorciones;
         public ImageView imageView, ivMenos, ivMas;
+        public ImageButton ibRemove;
 
-        public MyViewHolder(View v){
+
+        public MyViewHolder(View v, final OnItemClickListener listener){
             super(v);
+
             //Referenciamos las referencias con los elementos del CardView
             cardView = (CardView) v.findViewById(R.id.cardView);
             titulo = (TextView) v.findViewById(R.id.tvTitulo);
@@ -36,24 +64,57 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
             imageView = (ImageView) v.findViewById(R.id.ivImagen);
             ivMenos = (ImageView) v.findViewById(R.id.ivMenos);
             ivMas = (ImageView) v.findViewById(R.id.ivMas);
+            tvCantidadPorciones = (TextView) v.findViewById(R.id.tvCantidadPorciones);
+            ibRemove = (ImageButton) v.findViewById(R.id.ibRemove);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener!=null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
 
             ivMenos.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(listener!=null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onRetirePortionClick(position);
+                        }
+                    }
                 }
             });
 
             ivMas.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(listener!=null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onAddPortionClick(position);
+                        }
+                    }
                 }
             });
 
+            ibRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener!=null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onRemoveClick(position);
+                        }
+                    }
+                }
+            });
         }
-
-
     }
 
 
@@ -69,7 +130,7 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = (View) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.prueba_item_carrito, viewGroup, false);
-        MyViewHolder myViewHolder = new MyViewHolder(itemView);
+        MyViewHolder myViewHolder = new MyViewHolder(itemView, myListenner);
         return myViewHolder;
     }
 
@@ -81,8 +142,9 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
         DecimalFormat df2 = new DecimalFormat("#.00");
 
         myViewHolder.titulo.setText(informacion.get(i).titulo);
-        myViewHolder.precio.setText("$" + df2.format(informacion.get(i).precio));
+        myViewHolder.precio.setText("$" + df2.format(informacion.get(i).precioMostrador));
         myViewHolder.imageView.setImageResource(informacion.get(i).imagen);
+        myViewHolder.tvCantidadPorciones.setText(Integer.toString(informacion.get(i).porciones));
     }
 
     //Regresa el tamaño de la lista de información

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">VerCarrito</string>
+    <string name="onRemove1">¿Realmente deseas eliminar </string>
+    <string name="dialog_title">Eliminar Platillo</string>
+    <string name="ok">Sí</string>
+    <string name="cancel">No</string>
 </resources>
