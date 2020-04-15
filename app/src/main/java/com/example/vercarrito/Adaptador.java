@@ -1,21 +1,35 @@
 package com.example.vercarrito;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
     //Lista con los elementos que se van a desplegar
+    public static final int MAX_ITEMS=5;
+
     public ArrayList<ItemCarrito> informacion;
 
     //contexto en el que se crearan las vistas
@@ -50,13 +64,15 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
         //Creamos las variables de referencia para los elementos del CardView
         public CardView cardView;
         public TextView titulo, precio, tvCantidadPorciones;
-        public ImageView imageView, ivMenos, ivMas;
+        public ImageView imageView, ivMenos, ivMas, ivRecordatorio;
         public ImageButton ibRemove;
+        public ConstraintLayout constraintLayout;
+        public ArrayList<ItemCarrito> lista;
 
 
-        public MyViewHolder(View v, final OnItemClickListener listener){
+        public MyViewHolder(View v, final OnItemClickListener listener, final ArrayList<ItemCarrito> lista){
             super(v);
-
+            this.lista = lista;
             //Referenciamos las referencias con los elementos del CardView
             cardView = (CardView) v.findViewById(R.id.cardView);
             titulo = (TextView) v.findViewById(R.id.tvTitulo);
@@ -64,8 +80,10 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
             imageView = (ImageView) v.findViewById(R.id.ivImagen);
             ivMenos = (ImageView) v.findViewById(R.id.ivMenos);
             ivMas = (ImageView) v.findViewById(R.id.ivMas);
+            ivRecordatorio = (ImageView) v.findViewById(R.id.ivRecordatorio);
             tvCantidadPorciones = (TextView) v.findViewById(R.id.tvCantidadPorciones);
             ibRemove = (ImageButton) v.findViewById(R.id.ibRemove);
+            constraintLayout = (ConstraintLayout) v.findViewById(R.id.constraintLayout);
 
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -103,6 +121,37 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
                 }
             });
 
+            ivRecordatorio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Context context = v.getContext();
+                    final Calendar calendario = Calendar.getInstance();
+                    int dia = calendario.get(Calendar.DAY_OF_MONTH);
+                    int mes = calendario.get(Calendar.MONTH);
+                    int anio = calendario.get(Calendar.YEAR);
+                    final String titulo = lista.get(getAdapterPosition()).titulo;
+
+
+                    //Toast.makeText(context, dia+"/"+mes+"/"+anio, Toast.LENGTH_SHORT).show();
+
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            calendario.set(year, month, dayOfMonth);
+                            //Toast.makeText(context, calendario.get(Calendar.DAY_OF_MONTH) + "/" + calendario.get(Calendar.MONTH) + "/" + calendario.get(Calendar.YEAR), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Intent.ACTION_INSERT)
+                                    .setData(CalendarContract.Events.CONTENT_URI)
+                                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendario.getTimeInMillis())
+                                    .putExtra(CalendarContract.Events.TITLE, titulo);
+                            context.startActivity(intent);
+                        }
+                    }, anio, mes, dia);
+
+                    datePickerDialog.show();
+
+                }
+            });
+
             ibRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,8 +178,12 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = (View) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.prueba_item_carrito, viewGroup, false);
-        MyViewHolder myViewHolder = new MyViewHolder(itemView, myListenner);
+        View itemView;
+        //if(i<3)
+            itemView = (View) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_carrito, viewGroup, false);
+        //else
+            itemView = (View) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.prueba_item_carrito, viewGroup, false);
+        MyViewHolder myViewHolder = new MyViewHolder(itemView, myListenner, informacion);
         return myViewHolder;
     }
 
@@ -141,10 +194,34 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
         //Para dar formato al Precio
         DecimalFormat df2 = new DecimalFormat("#.00");
 
+
+        if(getItemCount()>MAX_ITEMS && i < 3){
+            ViewGroup.LayoutParams ivParams = myViewHolder.imageView.getLayoutParams();
+            ivParams.height -=80;
+            myViewHolder.imageView.setLayoutParams(ivParams);
+        }
+
         myViewHolder.titulo.setText(informacion.get(i).titulo);
         myViewHolder.precio.setText("$" + df2.format(informacion.get(i).precioMostrador));
-        myViewHolder.imageView.setImageResource(informacion.get(i).imagen);
         myViewHolder.tvCantidadPorciones.setText(Integer.toString(informacion.get(i).porciones));
+        myViewHolder.imageView.setImageResource(informacion.get(i).imagen);
+        switch (informacion.get(i).categoria){
+            case "Aves":
+                myViewHolder.cardView.setBackgroundColor(context.getResources().getColor(R.color.aves));
+                break;
+            case "Carnes":
+                myViewHolder.cardView.setBackgroundColor(context.getResources().getColor(R.color.carnes));
+                break;
+            case "Horneado":
+                myViewHolder.cardView.setBackgroundColor(context.getResources().getColor(R.color.horneado));
+                break;
+            case "Mar":
+                myViewHolder.cardView.setBackgroundColor(context.getResources().getColor(R.color.pescado));
+                break;
+            case "Parrilla":
+                myViewHolder.cardView.setBackgroundColor(context.getResources().getColor(R.color.parrilla));
+                break;
+        }
     }
 
     //Regresa el tamaño de la lista de información

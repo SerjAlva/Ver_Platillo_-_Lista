@@ -2,9 +2,14 @@
 <resources>
     <color name="colorPrimary">#3186F7</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#FF5722</color>
     <color name="naranja">#FF5722</color>
     <color name="azul">#3186F7</color>
     <color name="blanco">#FFFFFF</color>
+    <color name="aves">#77FFC107</color>
+    <color name="carnes">#75DC2323</color>
+    <color name="horneado">#7F4CAF50</color>
+    <color name="pescado">#782196F3</color>
+    <color name="parrilla">#73673AB7</color>
 
 </resources>

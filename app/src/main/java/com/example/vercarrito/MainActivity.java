@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         //Este listener nos ayuda a controlar cuando vemos o no el botón de compra
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -134,10 +135,10 @@ public class MainActivity extends AppCompatActivity {
         btnComprar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Refrescando Datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Reordenando Datos", Toast.LENGTH_SHORT).show();
                 /*lista = cargarDatos();
                 adaptador.notifyDataSetChanged();*/
-                lista = cargarDatos();
+                lista = reordenarDatos(lista);
                 adaptador = new Adaptador(v.getContext(), lista);
                 recyclerView.setAdapter(adaptador);
             }
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void actualizarPrecio(double monto){
         total+=monto;
         btnComprar.setText("Total: $" + total);
@@ -159,12 +161,27 @@ public class MainActivity extends AppCompatActivity {
     //Método para hacer la carga de la información que se va a desplegar en el recyclerView
     public ArrayList<ItemCarrito> cargarDatos(){
         ArrayList<ItemCarrito> lista = new ArrayList<ItemCarrito>();
-        lista.add(new ItemCarrito("Pollo a la bologneza", 150.50, R.drawable.pollo_bolognesa, 1));
-        lista.add(new ItemCarrito("Sandwich el Cochinito", 200.00, R.drawable.cochinito, 1));
-        lista.add(new ItemCarrito("Hamburguesa", 100.00, R.drawable.hamburguesa, 1));
-        lista.add(new ItemCarrito("Pizza Artesanal", 120.50, R.drawable.pizza, 1));
-        lista.add(new ItemCarrito("Parrillada", 225.00, R.drawable.carne_asada, 1));
-        lista.add(new ItemCarrito("Mojarra al mojo de Ajo", 160.00, R.drawable.mojarra, 1));
+
+        lista.add(new ItemCarrito("Sandwich el Cochinito", 200.00, R.drawable.cochinito, 1, "Carnes"));
+        lista.add(new ItemCarrito("Hamburguesa", 100.00, R.drawable.hamburguesa, 1, "Parrilla"));
+        lista.add(new ItemCarrito("Pizza Artesanal", 120.50, R.drawable.pizza, 1, "Horneado"));
+        lista.add(new ItemCarrito("Parrillada", 225.00, R.drawable.carne_asada, 1, "Parrilla"));
+        lista.add(new ItemCarrito("Mojarra al mojo de Ajo", 160.00, R.drawable.mojarra, 1, "Mar"));
+        lista.add(new ItemCarrito("Pollo a la bologneza", 150.50, R.drawable.pollo_bolognesa, 1, "Aves"));
         return lista;
+    }
+
+    public ArrayList<ItemCarrito> reordenarDatos(ArrayList<ItemCarrito> lista){
+        ArrayList<ItemCarrito> nuevaLista = new ArrayList<>();
+        String[] categorias = {"Aves", "Carnes", "Horneado", "Mar", "Parrilla" };
+
+        for(String categoria : categorias) {
+            for (ItemCarrito item : lista) {
+                if (item.categoria.equals(categoria)) {
+                    nuevaLista.add(item);
+                }
+            }
+        }
+        return nuevaLista;
     }
 }
