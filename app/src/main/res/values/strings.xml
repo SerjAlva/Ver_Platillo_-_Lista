@@ -5,4 +5,9 @@
     <string name="ok">Sí</string>
     <string name="cancel">No</string>
     <string name="porcionesTest">4</string>
+    <string name="categoriaTest">Frutas y Verduras</string>
+    <string name="progress_test">4/5</string>
+    <string name="onSuccessToast">Información guardada correctamente</string>
+    <string name="onErrorToast">Lo sentimos, algo salió mal</string>
+    <string name="elemListTest">1.5 kg de Zanahoria</string>
 </resources>

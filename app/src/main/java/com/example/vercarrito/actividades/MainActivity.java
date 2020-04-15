@@ -1,10 +1,11 @@
-package com.example.vercarrito;
+package com.example.vercarrito.actividades;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.vercarrito.R;
+import com.example.vercarrito.adaptadores.AdaptadorPlatillo;
+import com.example.vercarrito.modelos.CategoriaAlimento;
+import com.example.vercarrito.modelos.ItemCarrito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     List<String> itemsCarrito;
     //Creamos un adaptador y un LinearLayoutManager que son necesarios para usar nuestro recyclerView
     LinearLayoutManager linearLayoutManager;
-    Adaptador adaptador;
+    AdaptadorPlatillo adaptadorPlatillo;
     Button btnComprar;
     double total = 0;
     ArrayList<ItemCarrito> lista = cargarDatos();
@@ -51,11 +57,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         //Asignamos el adaptador a nuestro recyclerView
-        adaptador = new Adaptador(this, lista);
-        recyclerView.setAdapter(adaptador);
+        adaptadorPlatillo = new AdaptadorPlatillo(this, lista);
+        recyclerView.setAdapter(adaptadorPlatillo);
 
         //Configuramos lo que sea que querramos que haga la aplicación al tocar un elemento del RecyclerView
-        adaptador.setOnItemClickListener(new Adaptador.OnItemClickListener() {
+        adaptadorPlatillo.setOnItemClickListener(new AdaptadorPlatillo.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
 
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 lista.get(position).porciones++;
                 lista.get(position).precioMostrador = lista.get(position).precio*lista.get(position).porciones;
                 actualizarPrecio(lista.get(position).precio);
-                adaptador.notifyItemChanged(position);
+                adaptadorPlatillo.notifyItemChanged(position);
             }
             //Este método se manda a llamar cuando el usuario quita porciones
             @Override
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     lista.get(position).porciones--;
                     lista.get(position).precioMostrador = lista.get(position).precio*lista.get(position).porciones;
                     actualizarPrecio(-(lista.get(position).precio));
-                    adaptador.notifyItemChanged(position);
+                    adaptadorPlatillo.notifyItemChanged(position);
                 }
             }
 
@@ -94,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 actualizarPrecio(-(lista.get(posicion).precioMostrador));
                                 lista.remove(posicion);
-                                adaptador.notifyItemRemoved(posicion);
+                                adaptadorPlatillo.notifyItemRemoved(posicion);
                             }
                         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -138,9 +144,17 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Reordenando Datos", Toast.LENGTH_SHORT).show();
                 /*lista = cargarDatos();
                 adaptador.notifyDataSetChanged();*/
-                lista = reordenarDatos(lista);
-                adaptador = new Adaptador(v.getContext(), lista);
-                recyclerView.setAdapter(adaptador);
+                String listaCompras = "";
+                /*for(ItemCarrito item : lista){
+                    if(item.listaIngredientes.size() != 0){
+                        for(String ingrediente : item.listaIngredientes){
+                            listaCompras += ingrediente;
+                        }
+                    }
+                }*/
+                Intent intent = new Intent(MainActivity.this, Activity_ver_lista_de_compras.class)
+                        .putExtra("lista", "{Zahanhoria:1.5:kg:Frutas y Verduras;Calabacines:3.5:kg:Frutas y Verduras;Calabacitas:1.0:kg:Frutas y Verduras;pechuga de pavo:350.0:g:Salchichonería;frijoles bayos:850.0:g:Despensa;arroz integral:900.0:g:Despensa;frijoles negros:600.0:g:Despensa;papel higiénico:20.0:rollos:Otros;aceite:200.0:ml:Básicos;sal:1.0:pizca:Básicos;pimienta:1.0:pizca:Básicos;}");
+                startActivity(intent);
             }
         });
 

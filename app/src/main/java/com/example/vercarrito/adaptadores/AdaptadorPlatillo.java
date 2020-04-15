@@ -1,4 +1,4 @@
-package com.example.vercarrito;
+package com.example.vercarrito.adaptadores;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -13,20 +13,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.vercarrito.modelos.ItemCarrito;
+import com.example.vercarrito.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
+public class AdaptadorPlatillo extends RecyclerView.Adapter<AdaptadorPlatillo.MyViewHolder>{
     //Lista con los elementos que se van a desplegar
     public static final int MAX_ITEMS=5;
 
@@ -169,7 +167,7 @@ class Adaptador extends RecyclerView.Adapter<Adaptador.MyViewHolder>{
 
 
     //Constructor del adaptador
-    public Adaptador(Context context, ArrayList<ItemCarrito> informacion) {
+    public AdaptadorPlatillo(Context context, ArrayList<ItemCarrito> informacion) {
         this.context = context;
         this.informacion = informacion;
     }
